@@ -1,6 +1,7 @@
 {
   "name": "skillbridge-ass4",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "dev": "tsx watch ./src/server.ts",
     "build": "tsc",
