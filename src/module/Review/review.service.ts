@@ -113,8 +113,30 @@ const createReviewIntoDB = async (userId: number, payload: any) => {
 };
 
 
+// Get Tutor Reviews (Public)
+// ─────────────────────────────────────────
+const getTutorReviewsFromDB = async (tutorProfileId: number) => {
+  const reviews = await prisma.review.findMany({
+    where: { tutorProfileId },
+    include: {
+      student: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+
+  return reviews;
+};
+
+
 
 
 export const ReviewService = {
   createReviewIntoDB,
+  getTutorReviewsFromDB
 };

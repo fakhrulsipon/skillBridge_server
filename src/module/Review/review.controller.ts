@@ -28,10 +28,43 @@ const createReview = async (req: Request, res: Response) => {
    }
 };
 
+// GET /api/v1/review/tutor/:tutorProfileId
+// ─────────────────────────────────────────
+const getTutorReviews = async (req: Request, res: Response) => {
+   try {
+      const tutorProfileId = parseInt(req.params.tutorProfileId as string);
 
 
+      if (isNaN(tutorProfileId)) {
+         return sendResponse(res, {
+            statusCode: 400,
+            success: false,
+            message: 'Invalid tutor profile id',
+            data: null,
+         });
+      }
 
+
+      const result = await ReviewService.getTutorReviewsFromDB(tutorProfileId);
+
+
+      sendResponse(res, {
+         statusCode: 200,
+         success: true,
+         message: 'Reviews fetched successfully',
+         data: result,
+      });
+   } catch (error: any) {
+      sendResponse(res, {
+         statusCode: 500,
+         success: false,
+         message: error.message || 'Something went wrong',
+         data: null,
+      });
+   }
+};
 
 export const ReviewController = {
-   createReview
+   createReview,
+   getTutorReviews
 };
