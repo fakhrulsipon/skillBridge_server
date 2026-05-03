@@ -74,7 +74,49 @@ const createTutorIntoDB = async (payload: any, userId: number) => {
    return result;
 };
 
+// ─────────────────────────────────────────
+// Get My Profile
+// ─────────────────────────────────────────
+const getMyProfileFromDB = async (userId: number) => {
+
+
+   const profile = await prisma.tutorProfile.findUnique({
+      where: { userId },
+      include: {
+         user: {
+            select: {
+               id: true,
+               name: true,
+               email: true,
+               role: true,
+            }
+         },
+         ...categoryInclude,
+         availability: {
+            orderBy: { dayOfWeek: "asc" }
+         },
+         reviews: {
+            include: {
+               student: {
+                  select: { name: true }
+               }
+            },
+            orderBy: { createdAt: "desc" }
+         }
+      }
+   });
+
+
+   if (!profile) {
+      throw new Error('Tutor profile not found');
+   }
+
+
+   return profile;
+};
+
 
 export const TutorService = {
-   createTutorIntoDB
+   createTutorIntoDB,
+   getMyProfileFromDB
 };

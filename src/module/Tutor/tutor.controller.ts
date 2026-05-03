@@ -26,8 +26,33 @@ const createTutor = async (req: Request, res: Response) => {
    }
 };
 
+// ─────────────────────────────────────────
+// Get My Profile
+// ─────────────────────────────────────────
+const getMyProfile = async (req: Request, res: Response) => {
+   try {
+      const userId = req.user?.id;
+      const result = await TutorService.getMyProfileFromDB(userId);
+
+
+      sendResponse(res, {
+         statusCode: 200,
+         success: true,
+         message: 'Profile fetched successfully',
+         data: result,
+      });
+   } catch (error: any) {
+      sendResponse(res, {
+         statusCode: 404,
+         success: false,
+         message: error.message || 'Something went wrong',
+         data: null,
+      });
+   }
+};
 
 
 export const TutorController = {
-   createTutor
+   createTutor,
+   getMyProfile
 };
