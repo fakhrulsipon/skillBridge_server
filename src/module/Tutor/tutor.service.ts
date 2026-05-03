@@ -294,6 +294,20 @@ const getAllTutorsFromDB = async () => {
    return tutors;
 };
 
+// ─────────────────────────────────────────
+// Get All Categories (Public)
+// ─────────────────────────────────────────
+const getAllCategoriesFromDB = async () => {
+
+
+   const categories = await prisma.category.findMany({
+      orderBy: { name: "asc" }
+   });
+
+
+   return categories;
+};
+
 
 export const TutorService = {
    createTutorIntoDB,
@@ -301,5 +315,6 @@ export const TutorService = {
    updateTutorProfileIntoDB,
    setAvailabilityIntoDB,
    getTutorByIdFromDB,
-   getAllTutorsFromDB
+   getAllTutorsFromDB,
+   getAllCategoriesFromDB
 };

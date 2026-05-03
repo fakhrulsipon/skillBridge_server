@@ -157,6 +157,30 @@ const getAllTutors = async (req: Request, res: Response) => {
 };
 
 
+// ─────────────────────────────────────────
+// GET /api/v1/tutor/categories
+// ─────────────────────────────────────────
+const getAllCategories = async (req: Request, res: Response) => {
+   try {
+      const result = await TutorService.getAllCategoriesFromDB();
+
+
+      sendResponse(res, {
+         statusCode: 200,
+         success: true,
+         message: 'Categories fetched successfully',
+         data: result,
+      });
+   } catch (error: any) {
+      sendResponse(res, {
+         statusCode: 404,
+         success: false,
+         message: error.message || 'Something went wrong',
+         data: null,
+      });
+   }
+};
+
 
 export const TutorController = {
    createTutor,
@@ -164,5 +188,6 @@ export const TutorController = {
    updateTutorProfile,
    setAvailability,
    getTutorById,
-   getAllTutors
+   getAllTutors,
+   getAllCategories
 };
