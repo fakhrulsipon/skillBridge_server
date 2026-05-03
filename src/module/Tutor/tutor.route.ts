@@ -12,6 +12,7 @@ router.put('/me', auth(userRole.TUTOR), TutorController.updateTutorProfile);
 router.put('/availability', auth(userRole.TUTOR), TutorController.setAvailability);
 
 
+router.get('/', TutorController.getAllTutors);
 router.get('/:id', TutorController.getTutorById);
 
 

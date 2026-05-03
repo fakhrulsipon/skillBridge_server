@@ -131,10 +131,38 @@ const getTutorById = async (req: Request, res: Response) => {
    }
 };
 
+
+// ─────────────────────────────────────────
+// Get All Tutors (Public)
+// ─────────────────────────────────────────
+const getAllTutors = async (req: Request, res: Response) => {
+   try {
+      const result = await TutorService.getAllTutorsFromDB();
+
+
+      sendResponse(res, {
+         statusCode: 200,
+         success: true,
+         message: 'Tutors fetched successfully',
+         data: result,
+      });
+   } catch (error: any) {
+      sendResponse(res, {
+         statusCode: 500,
+         success: false,
+         message: error.message || 'Something went wrong',
+         data: null,
+      });
+   }
+};
+
+
+
 export const TutorController = {
    createTutor,
    getMyProfile,
    updateTutorProfile,
    setAvailability,
-   getTutorById
+   getTutorById,
+   getAllTutors
 };

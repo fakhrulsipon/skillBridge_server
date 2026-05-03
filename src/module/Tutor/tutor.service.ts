@@ -266,11 +266,40 @@ const getTutorByIdFromDB = async (id: number) => {
    return tutor;
 };
 
+// ─────────────────────────────────────────
+// Get All Tutors (Public)
+// ─────────────────────────────────────────
+const getAllTutorsFromDB = async () => {
+
+
+   const tutors = await prisma.tutorProfile.findMany({
+      where: {
+         isApproved: true
+      },
+      include: {
+         user: {
+            select: {
+               id: true,
+               name: true,
+               email: true,
+            }
+         },
+         ...categoryInclude,
+         availability: true,
+      },
+      orderBy: { avgRating: "desc" }
+   });
+
+
+   return tutors;
+};
+
 
 export const TutorService = {
    createTutorIntoDB,
    getMyProfileFromDB,
    updateTutorProfileIntoDB,
    setAvailabilityIntoDB,
-   getTutorByIdFromDB
+   getTutorByIdFromDB,
+   getAllTutorsFromDB
 };
