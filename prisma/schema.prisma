@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  STUDENT
+  TUTOR
+  ADMIN
+}
+
+enum BookingStatus {
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(STUDENT)
+  isBanned  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tutorProfile TutorProfile?
+  bookingsAsStudent Booking[] @relation("StudentBookings")
+  reviews      Review[]
+}
+
+model TutorProfile {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique
+  bio         String?
+  hourlyRate  Float
+  experience  Int      @default(0)  // years
+  location    String?
+  imageUrl    String?
+  isApproved  Boolean  @default(true)
+  avgRating   Float    @default(0)
+  totalReviews Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categories   TutorCategory[]
+  availability Availability[]
+  bookings     Booking[]  @relation("TutorBookings")
+  reviews      Review[]
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  icon      String?
+  createdAt DateTime @default(now())
+
+  tutors TutorCategory[]
+}
+
+model TutorCategory {
+  tutorProfileId Int
+  categoryId     Int
+
+  tutorProfile TutorProfile @relation(fields: [tutorProfileId], references: [id], onDelete: Cascade)
+  category     Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([tutorProfileId, categoryId])
+}
+
+model Availability {
+  id             Int      @id @default(autoincrement())
+  tutorProfileId Int
+  dayOfWeek      Int      // 0=Sun, 1=Mon ... 6=Sat
+  startTime      String   // e.g. "09:00"
+  endTime        String   // e.g. "17:00"
+  createdAt      DateTime @default(now())
+
+  tutorProfile TutorProfile @relation(fields: [tutorProfileId], references: [id], onDelete: Cascade)
+}
+
+model Booking {
+  id             Int           @id @default(autoincrement())
+  studentId      Int
+  tutorProfileId Int
+  scheduledAt    DateTime
+  duration       Int           // in minutes
+  totalPrice     Float
+  status         BookingStatus @default(CONFIRMED)
+  note           String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  student      User         @relation("StudentBookings", fields: [studentId], references: [id])
+  tutorProfile TutorProfile @relation("TutorBookings", fields: [tutorProfileId], references: [id])
+  review       Review?
+}
+
+model Review {
+  id             Int      @id @default(autoincrement())
+  studentId      Int
+  tutorProfileId Int
+  bookingId      Int      @unique
+  rating         Int      // 1-5
+  comment        String?
+  createdAt      DateTime @default(now())
+
+  student      User         @relation(fields: [studentId], references: [id])
+  tutorProfile TutorProfile @relation(fields: [tutorProfileId], references: [id])
+  booking      Booking      @relation(fields: [bookingId], references: [id])
+}
