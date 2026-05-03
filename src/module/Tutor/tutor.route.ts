@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get('/categories', TutorController.getAllCategories);
 router.get('/me', auth(userRole.TUTOR), TutorController.getMyProfile);
+router.put('/me', auth(userRole.TUTOR), TutorController.updateTutorProfile);
 
 
 export const TutorRoutes = router;

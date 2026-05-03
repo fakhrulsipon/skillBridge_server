@@ -51,8 +51,35 @@ const getMyProfile = async (req: Request, res: Response) => {
    }
 };
 
+// ─────────────────────────────────────────
+// Update Tutor Profile
+// ─────────────────────────────────────────
+const updateTutorProfile = async (req: Request, res: Response) => {
+   try {
+      const userId = req.user?.id;
+      const result = await TutorService.updateTutorProfileIntoDB(userId, req.body);
+
+
+      sendResponse(res, {
+         statusCode: 200,
+         success: true,
+         message: 'Profile updated successfully',
+         data: result,
+      });
+   } catch (error: any) {
+      sendResponse(res, {
+         statusCode: 500,
+         success: false,
+         message: error.message || 'Something went wrong',
+         data: null,
+      });
+   }
+};
+
+
 
 export const TutorController = {
    createTutor,
-   getMyProfile
+   getMyProfile,
+   updateTutorProfile
 };

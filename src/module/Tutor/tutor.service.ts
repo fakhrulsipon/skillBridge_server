@@ -115,8 +115,70 @@ const getMyProfileFromDB = async (userId: number) => {
    return profile;
 };
 
+// ─────────────────────────────────────────
+// Update Tutor Profile
+// ─────────────────────────────────────────
+const updateTutorProfileIntoDB = async (userId: number, payload: any) => {
+
+
+   // Check profile exists
+   const existingProfile = await prisma.tutorProfile.findUnique({
+      where: { userId }
+   });
+
+
+   if (!existingProfile) {
+      throw new Error('Tutor profile not found. Please create your profile first');
+   }
+
+
+   // Rebuild category join rows if categoryIds provided
+   if (payload.categoryIds !== undefined) {
+      await prisma.tutorCategory.deleteMany({
+         where: { tutorProfileId: existingProfile.id }
+      });
+
+
+      if (payload.categoryIds.length > 0) {
+         await prisma.tutorCategory.createMany({
+            data: payload.categoryIds.map((categoryId: number) => ({
+               tutorProfileId: existingProfile.id,
+               categoryId,
+            })),
+         });
+      }
+   }
+
+
+   const result = await prisma.tutorProfile.update({
+      where: { userId },
+      data: {
+         bio: payload.bio,
+         hourlyRate: payload.hourlyRate,
+         experience: payload.experience,
+         location: payload.location,
+         imageUrl: payload.imageUrl,
+      },
+      include: {
+         user: {
+            select: {
+               name: true,
+               email: true,
+               role: true
+            }
+         },
+         ...categoryInclude,
+         availability: true,
+      }
+   });
+
+
+   return result;
+};
+
 
 export const TutorService = {
    createTutorIntoDB,
-   getMyProfileFromDB
+   getMyProfileFromDB,
+   updateTutorProfileIntoDB
 };
