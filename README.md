@@ -10,7 +10,7 @@ The robust API engine powering the SkillBridge marketplace. Built with **Express
 - **Frontend GitHub:** []()
 - **Backend GitHub:** []()
 - **Live Site:** []()
-- **Backend API:** [Render](https://skill-bridge-zp3v.onrender.com)
+- **Backend API:** [Render]()
 
 
 
@@ -68,7 +68,7 @@ The project follows a modular architecture:
 
 ### 1. Installation
 ```bash
-git clone https://github.com/rubel6610/skill-bridge.git
+git clone
 cd skill-bridge
 npm install
 ```
@@ -77,7 +77,7 @@ npm install
 ### 2. Database Setup
 Ensure you have a PostgreSQL instance running, then configure your `.env`:
 ```env
-DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/skillbridge?schema=public"
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/skillbridge_server?schema=public"
 JWT_SECRET="your_secret_key"
 PORT=5000
 ```
