@@ -234,9 +234,43 @@ const setAvailabilityIntoDB = async (userId: number, slots: any[]) => {
    return availability;
 };
 
+// ─────────────────────────────────────────
+// Get Tutor By ID (Public)
+// ─────────────────────────────────────────
+const getTutorByIdFromDB = async (id: number) => {
+
+
+   const tutor = await prisma.tutorProfile.findUnique({
+      where: { id },
+      include: {
+         user: {
+            select: {
+               id: true,
+               name: true,
+               email: true,
+            }
+         },
+         ...categoryInclude,
+         availability: {
+            orderBy: { dayOfWeek: "asc" }
+         }
+      }
+   });
+
+
+   if (!tutor) {
+      throw new Error('Tutor not found');
+   }
+
+
+   return tutor;
+};
+
+
 export const TutorService = {
    createTutorIntoDB,
    getMyProfileFromDB,
    updateTutorProfileIntoDB,
-   setAvailabilityIntoDB
+   setAvailabilityIntoDB,
+   getTutorByIdFromDB
 };
