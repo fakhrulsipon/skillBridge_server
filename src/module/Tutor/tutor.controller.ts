@@ -76,10 +76,38 @@ const updateTutorProfile = async (req: Request, res: Response) => {
    }
 };
 
+// ─────────────────────────────────────────
+// Set Availability
+// ─────────────────────────────────────────
+const setAvailability = async (req: Request, res: Response) => {
+   try {
+      const userId = req.user?.id;
+      const { slots } = req.body;
+
+
+      const result = await TutorService.setAvailabilityIntoDB(userId, slots);
+
+
+      sendResponse(res, {
+         statusCode: 200,
+         success: true,
+         message: 'Availability set successfully',
+         data: result,
+      });
+   } catch (error: any) {
+      sendResponse(res, {
+         statusCode: 500,
+         success: false,
+         message: error.message || 'Something went wrong',
+         data: null,
+      });
+   }
+};
 
 
 export const TutorController = {
    createTutor,
    getMyProfile,
-   updateTutorProfile
+   updateTutorProfile,
+   setAvailability
 };
