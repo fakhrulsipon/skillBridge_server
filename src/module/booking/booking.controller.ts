@@ -3,7 +3,6 @@ import sendResponse from "../../utils/sendResponse";
 import { BookingService } from "./booking.service";
 
 
-// ─────────────────────────────────────────
 // POST /api/v1/booking
 // ─────────────────────────────────────────
 const createBooking = async (req: Request, res: Response) => {
