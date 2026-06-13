@@ -4,6 +4,7 @@ import { BookingRoutes } from "../module/booking/booking.route";
 import { AdminRoutes } from "../module/Admin/admin.route";
 import { ReviewRoutes } from "../module/Review/review.route";
 import { AuthRoutes } from "../module/auth/auth.route";
+import { PaymentRoutes } from "../module/payment/payment.route";
 
 
 
@@ -29,6 +30,10 @@ const routerManager =[
     {
         path: '/review',
         route: ReviewRoutes
+    },
+    {
+        path: '/',
+        route: PaymentRoutes
     }
 ]
 
