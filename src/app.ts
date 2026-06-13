@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import Stripe from "stripe";
-import { prisma } from "./lib/prisma";
 
 import router from "./routes";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
@@ -11,8 +10,9 @@ const app = express();
 
 app.use(cors());
 
+// -------------------------------------------------------------------------
 // 🚨 STRIPE WEBHOOK (Must be BEFORE express.json())
-
+// -------------------------------------------------------------------------
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-01-27" as any,
 });
@@ -35,25 +35,21 @@ app.post(
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
+    // পেমেন্ট সফল হলে এই ব্লকটি রান হবে
     if (event.type === "payment_intent.succeeded") {
       const paymentIntent = event.data.object as any;
-
-      try {
-        await prisma.order.update({
-          where: { stripePaymentId: paymentIntent.id },
-          data: { status: "succeeded" },
-        });
-        console.log(`💰 Payment for ${paymentIntent.id} succeeded and DB updated!`);
-      } catch (dbError) {
-        console.error("❌ Database update failed on webhook:", dbError);
-      }
+      
+      // ডাটাবেজ আপডেটের ঝামেলাযুক্ত কোডটি সরিয়ে শুধু একটি কনসোল লগ রাখা হলো
+      console.log(`💰 Stripe Payment Intent ${paymentIntent.id} succeeded via Webhook!`);
     }
 
     res.json({ received: true });
   }
 );
 
-
+// -------------------------------------------------------------------------
+// গ্লোবাল মিডলওয়্যার এবং বাকি রাউটস (Webhook এর নিচে থাকবে)
+// -------------------------------------------------------------------------
 app.use(express.json());
 
 app.use("/api", router);
