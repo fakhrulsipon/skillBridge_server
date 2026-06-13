@@ -114,3 +114,11 @@ model Review {
   tutorProfile TutorProfile @relation(fields: [tutorProfileId], references: [id])
   booking      Booking      @relation(fields: [bookingId], references: [id])
 }
+
+model Order {
+  id              String   @id @default(uuid())
+  stripePaymentId String   @unique
+  amount          Int      
+  userEmail       String
+  createdAt       DateTime @default(now())
+}
