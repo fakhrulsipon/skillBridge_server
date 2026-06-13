@@ -13,9 +13,8 @@ app.use(cors());
 // -------------------------------------------------------------------------
 // 🚨 STRIPE WEBHOOK (Must be BEFORE express.json())
 // -------------------------------------------------------------------------
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-01-27" as any,
-});
+// ✅ সঠিক ও নিরাপদ কোড
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 app.post(
   "/api/webhook",
